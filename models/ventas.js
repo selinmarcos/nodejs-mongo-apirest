@@ -5,9 +5,10 @@ const userSchema = new mongoose.Schema({
     noFactura: {
         type: Number,
         required: true
+
     },
     fecha: {
-        type: String,
+        type: Date,
         required: true
     },
     idClient: {

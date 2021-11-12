@@ -7,6 +7,8 @@ const Clientes = require('../models/clientes')
 const Products = require('../models/products')
 const Ventas = require('../models/ventas')
 const detalleVenta = require('../models/detalleVenta')
+const Counter = require('../models/counter')
+
 const mongoose = require('mongoose')
 
 const ObjectID = require('mongodb').ObjectID
@@ -394,37 +396,64 @@ router.get('/ventas', async (req, res) => {
     res.json(filas)
  })
 
-//PROCESAR VENTA (deben llenarse 2 tablas)
+//PROCESAR VENTA (deben llenarse 2 tablas primero ventas... luego extraemos el id de ventas para insertar en detalleVenta)
 router.post('/ventas', async (req, res) => {
 
+try{
     var idClient = mongoose.Types.ObjectId(req.body.idClient);
     var idUser = mongoose.Types.ObjectId(req.body.idUser);
-    
-        const ventas = new Ventas({
-            noFactura: req.body.noFactura,
+  
+         const ventas = new Ventas({
+            noFactura: await sequence(),
             fecha: req.body.fecha,
             idClient: idClient,
             idUser: idUser,
             estado: req.body.estado,
             totalFactura: req.body.totalFactura
         })
+    //funcion para el autoincremente del campo noFactura
+        async function sequence(){
+            const filaS = await Ventas.findOne().sort({_id:-1}).limit(1)
+            //comprobamos si en ventas hay registros para en 1 o sumarle.
+           if(filaS!=null){
+            var idVenta = mongoose.Types.ObjectId(filaS._id);
+
+            const filas = await Ventas.findOne({_id:idVenta})
+             //console.log('NUMERO DE FACTURA'+filas.noFactura)
+             console.log(filas.noFactura)
+            return filas.noFactura + 1
+
+           }else{
+               return 1
+           }
+
+
+        }
+ 
     
         const result = await ventas.save()
     
         const {...data} = await result.toJSON()
         
         res.send(data)
+        console.log('ME COMPLETE PORFIN ')
+
+}catch(error){
+    console.log('FATAL ERRO EN VENTAS'+ error)
+}
+
 
 
 
     })
 
-    
+
    
     router.post('/dventas', async (req, res) => {
+        console.log('VOY PRIMERO IDIOTA')
         //obtenemos el ultimo documento insertado en ventas para asi usarlo en detalle venta
          const filas = await Ventas.findOne().sort({_id:-1}).limit(1)
-         console.log("ventassss: "+filas._id)
+         //console.log("ventassss: "+filas._id)
 
 
             //Detalle Venta
@@ -434,7 +463,7 @@ router.post('/ventas', async (req, res) => {
 
             //INSERTANDO DATOS DE UN ARRAY
             for(i=0;i<= v.length - 1;i++){
-                console.log(v[i])
+                //console.log(v[i])
               
                 const detalleV = new detalleVenta({
                     idProduct: v[i].idProduct0,
@@ -451,11 +480,6 @@ router.post('/ventas', async (req, res) => {
 
         
         })
-
-
-
-
-
 
 
 module.exports = router;
