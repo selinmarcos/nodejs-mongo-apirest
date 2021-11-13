@@ -58,12 +58,12 @@ router.post('/login', async (req, res) => {
         maxAge: 24 * 60 * 60 * 1000 // 1 day
     })
 
-    res.send({
-        message: 'success',
+    res.json({
         token: token,
-        user: user
-    
+        message: 'success',
+
     })
+    //res.json(User)
 })
 
 router.get('/user', async (req, res) => {
@@ -85,7 +85,7 @@ router.get('/user', async (req, res) => {
 
         const {pass, ...data} = await user.toJSON()
 
-        res.send(data)
+        res.json(data)
     } catch (e) {
         return res.status(401).send({
             message: 'unauthenticated'
