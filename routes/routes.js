@@ -450,20 +450,23 @@ try{
 
    
     router.post('/dventas', async (req, res) => {
+        try {
+            
+      
         console.log('VOY PRIMERO IDIOTA')
         //obtenemos el ultimo documento insertado en ventas para asi usarlo en detalle venta
          const filas = await Ventas.findOne().sort({_id:-1}).limit(1)
-         //console.log("ventassss: "+filas._id)
+         console.log("ventassss: "+filas._id)
 
 
             //Detalle Venta
             //var idProduct = mongoose.Types.ObjectId(req.body.idProduct);
             var idVenta = mongoose.Types.ObjectId(filas._id);
-            var v = req.body.cantidad 
-
+            var v = req.body.cant
+            console.log(v.length)
             //INSERTANDO DATOS DE UN ARRAY
-            for(i=0;i<= v.length - 1;i++){
-                //console.log(v[i])
+            for(i=0;i< v.length ;i++){
+              
               
                 const detalleV = new detalleVenta({
                     idProduct: v[i].idProduct0,
@@ -471,12 +474,17 @@ try{
                     cantidad: v[i].cantidad,
                     precioVenta: v[i].priceT
                 }) 
-                    const result = await detalleV.save()
+                  console.log(detalleV)
+                    // const result = 
+                    await detalleV.save()
         
-                    const {...data} = await result.toJSON()
+                    // const {...data} = await result.toJSON()
         
-                    res.send(data)
+                    // res.send(data)
             }
+        } catch (error) {
+            
+        }
 
         
         })
