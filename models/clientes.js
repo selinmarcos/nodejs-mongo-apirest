@@ -3,24 +3,24 @@ const mongoose = require('mongoose')
 const userSchema = new mongoose.Schema({
     nombre: {
         type: String,
-        default: 'REGULAR',
+        //default: 'REGULAR',
         required: true
     },
     nit: {
         type: Number,
-        default:'0000',
+        //default:'0000',
         required: true,
         unique: true
     },
     telefono: {
         type: Number,
-        default:'0000',
+        //default:'0000',
         required: true,
         
     },
     direccion: {
         type: String,
-        default:'0000',
+        //default:'0000',
         required: true,
         
     }
