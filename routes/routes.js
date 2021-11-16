@@ -477,17 +477,44 @@ try{
                   console.log(detalleV)
                     // const result = 
                     await detalleV.save()
-        
+                //comentamos estas dos ultimas lineas por que si no produce un error de headers y solo imprime 2 iteraciones
                     // const {...data} = await result.toJSON()
         
                     // res.send(data)
             }
         } catch (error) {
-            
+            console.log('FATAL ERROR EN DVENTAS')
         }
 
         
         })
+
+
+      //STOCK
+      router.put('/stock', async (req, res) => {
+        
+        
+
+        var s = req.body.cant
+        for(i=0;i< s.length ;i++){
+            var idProduct= s[i].idProduct0
+            const actual = await Products.findOne({_id:idProduct})
+            //res.json(actual)
+            console.log('IMPRIMIENDO STOCK ACTUAL'+ actual.stock)
+            const products = {
+                
+                stock: actual.stock - s[i].cantidad,
+                
+            }     
+            await Products.updateOne({_id:ObjectID(idProduct)},{$set:products}) 
+        }
+
+         
+      
+                // res.json({
+                //     message: 'campo actualizado'
+                // })   
+    })  
 
 
 module.exports = router;
