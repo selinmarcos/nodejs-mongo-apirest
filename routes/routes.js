@@ -7,7 +7,7 @@ const Clientes = require('../models/clientes')
 const Products = require('../models/products')
 const Ventas = require('../models/ventas')
 const detalleVenta = require('../models/detalleVenta')
-const Counter = require('../models/counter')
+const Business = require('../models/business')
 
 const mongoose = require('mongoose')
 
@@ -490,7 +490,7 @@ try{
         })
 
 
-      //STOCK
+      //STOCK (REDUCIMOS CADA VENTA)
       router.put('/stock', async (req, res) => {
         
         
@@ -516,5 +516,86 @@ try{
                 // })   
     })  
 
+    //STOCK - INPUT FIELD NUMBER
+    router.get('/products/:id', async (req, res) => {
+        // console.log('llegue')
+        const filas = await Products.findOne({_id:req.params.id})
+        
+        res.json(filas)
+        //console.log(filas)
+    })
+
+
+
+
+//-----------------------------------COMPANY--------------------------------------------------
+
+//CREATE
+router.post('/business', async (req, res) => {
+
+    //const filas = await Providers.findById(req.body.idProvider)
+    //console.log(filas.provider)
+    const business = new Business({
+     
+        nit: req.body.nit,
+        phone: req.body.phone,
+        email: req.body.email,
+        companyName: req.body.companyName,
+        companyLegalName: req.body.companyLegalName,
+        address: req.body.address,
+        city: req.body.city,
+        country: req.body.country,
+        iva: req.body.iva,
+        
+    })
+
+    const result = await business.save()
+
+    const {...data} = await result.toJSON()
+
+    res.send(data)
+})
+//SHOW COMPANY
+router.get('/business', async (req, res) => {
+    // console.log('llegue')
+     const filas = await Business.find({}) 
+     //const fore = await Providers.findOne({idProvider:"6133c7b6a4781a4110ca81d6"})
+     //console.log(fore)
+     res.json(filas)
+ })
+ //
+
+//  //DELETE
+//  router.delete('/products/:id', async (req, res) => {
+    
+//       const filas = await Products.deleteOne({"_id":ObjectID(req.params.id)}) 
+//       res.json(filas)
+//   })
+
+//EDIT BUSINESS
+router.put('/business/:id', async (req, res) => {
+
+    console.log(req.params.id)
+    const business = {
+        nit: req.body.nit,
+        phone: req.body.phone,
+        email: req.body.email,
+        companyName: req.body.companyName,
+        companyLegalName: req.body.companyLegalName,
+        address: req.body.address,
+        city: req.body.city,
+        country: req.body.country,
+        iva: req.body.iva,
+    }
+    //console.log(req.params.id)
+   
+     await Business.updateOne({_id:ObjectID(req.params.id)},{$set:business}) 
+  
+            //res.send(results)
+            //res.json(filas)
+            res.json({
+                message: 'campo actualizado'
+            })   
+})
 
 module.exports = router;
