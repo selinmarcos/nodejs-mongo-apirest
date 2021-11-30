@@ -482,6 +482,8 @@ try{
         
                     // res.send(data)
             }
+            
+            res.send('successfull')
         } catch (error) {
             console.log('FATAL ERROR EN DVENTAS')
         }
@@ -493,7 +495,7 @@ try{
       //STOCK (REDUCIMOS CADA VENTA)
       router.put('/stock', async (req, res) => {
         
-        
+        console.log('STOCK')
 
         var s = req.body.cant
         for(i=0;i< s.length ;i++){
@@ -509,7 +511,7 @@ try{
             await Products.updateOne({_id:ObjectID(idProduct)},{$set:products}) 
         }
 
-         
+        res.send('successfull')
       
                 // res.json({
                 //     message: 'campo actualizado'
