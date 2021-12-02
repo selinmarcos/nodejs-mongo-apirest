@@ -530,7 +530,7 @@ try{
 
 
 
-//-----------------------------------COMPANY--------------------------------------------------
+//-----------------------------------DATOS DE LA EMPRESA--------------------------------------------------
 
 //CREATE
 router.post('/business', async (req, res) => {
@@ -599,5 +599,56 @@ router.put('/business/:id', async (req, res) => {
                 message: 'campo actualizado'
             })   
 })
+
+
+//---------------------------------TABLA VENTAS----------------------------------
+router.get('/dventas/:id', async (req, res) => {
+        
+         const filas = await detalleVenta.find({idVenta:req.params.id}) 
+         console.log('peticion deventas',req.params.id)
+         res.json(filas)
+        //  const {...dataa} = await filas.toJSON()
+
+        //  res.send(dataa)
+   
+        //   const filas = await detalleVenta.aggregate(
+        //     [
+        //         {
+        //             $lookup:{
+        //                 from: "products",
+        //                 localField: "idProduct",
+        //                 foreignField: "_id",
+        //                 as: "product"
+        //             },
+        
+        //         },
+        //         { $unwind:"$product"}, 
+        //         {
+        //             $lookup:{
+        //                 from: "ventas",
+        //                 localField: "idVenta",
+        //                 foreignField: "_id",
+        //                 as: "venta"
+        //             }
+    
+        //         },
+        //         // // para mostrar en un objeto
+        //         { $unwind:"$venta"}
+     
+    
+        //     ]
+        // ) 
+        
+        // res.json(filas)
+
+    
+    })
+
+
+
+
+
+
+
 
 module.exports = router;
