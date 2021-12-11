@@ -12,6 +12,7 @@ const Business = require('../models/business')
 const mongoose = require('mongoose')
 
 const ObjectID = require('mongodb').ObjectID
+const ventas = require('../models/ventas')
 
 //LOGIN & REGISTER
 
@@ -472,7 +473,10 @@ try{
                     idProduct: v[i].idProduct0,
                     idVenta: idVenta, 
                     cantidad: v[i].cantidad,
-                    precioVenta: v[i].priceT
+                    precioVenta: v[i].priceT,
+                    //CAMPOS ESTATICOS FACTURA NECESARIOS
+                    productName:v[i].description0,
+                    productPrice:v[i].price0,
                 }) 
                   console.log(detalleV)
                     // const result = 
@@ -604,42 +608,51 @@ router.put('/business/:id', async (req, res) => {
 //---------------------------------TABLA VENTAS----------------------------------
 router.get('/dventas/:id', async (req, res) => {
         
-         const filas = await detalleVenta.find({idVenta:req.params.id}) 
-         console.log('peticion deventas',req.params.id)
-         res.json(filas)
-        //  const {...dataa} = await filas.toJSON()
+        //  const filas = await detalleVenta.find({idVenta:req.params.id}) 
+        //  res.json(filas)
 
-        //  res.send(dataa)
-   
-        //   const filas = await detalleVenta.aggregate(
-        //     [
-        //         {
-        //             $lookup:{
-        //                 from: "products",
-        //                 localField: "idProduct",
-        //                 foreignField: "_id",
-        //                 as: "product"
-        //             },
+        //guardamos en una variable req.params.id porque si no no funciona directo....
+        //el $match es como un where para filtrar solo los detalles de venta con el id especifico.. 
+        var idDV = mongoose.Types.ObjectId(req.params.id)
+          const filas = await detalleVenta.aggregate(
+           
+            [ 
+                {
+                    $match:{
+                        idVenta:idDV
+                    }
+
+                },
+                // Comentamos el lookup a productos porque  si no lo hacemos seguira enlazandose con 'products' y no mostrara el producto eliminado a momento de generar la factura.
+                // {
+                //     $lookup:{
+                //         from: "products",
+                //         localField: "idProduct",
+                //         foreignField: "_id",
+                //         as: "product"
+                //     },
         
-        //         },
-        //         { $unwind:"$product"}, 
-        //         {
-        //             $lookup:{
-        //                 from: "ventas",
-        //                 localField: "idVenta",
-        //                 foreignField: "_id",
-        //                 as: "venta"
-        //             }
+                // },
+                
+                // { $unwind:"$product"}, 
+                {
+                    $lookup:{
+                        from: "ventas",
+                        localField: "idVenta",
+                        foreignField: "_id",
+                        as: "venta"
+                    }
     
-        //         },
-        //         // // para mostrar en un objeto
-        //         { $unwind:"$venta"}
+                },
+                // // para mostrar en un objeto
+                { $unwind:"$venta"},
+              
      
     
-        //     ]
-        // ) 
+            ]
+        ) 
         
-        // res.json(filas)
+        res.json(filas)
 
     
     })

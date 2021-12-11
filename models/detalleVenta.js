@@ -18,6 +18,17 @@ const userSchema = new mongoose.Schema({
         type: Number,    
         required: true,
         
+    },
+
+//DATOS ADICIONALES PARA FACTURA ESTATICA
+    productName: {
+        type: String,    
+        required: true,
+        
+    },
+    productPrice: {
+        type: Number,    
+        required: true,        
     }
 
 })
