@@ -3,7 +3,9 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 mongoose.set('useCreateIndex', true)
-mongoose.connect('mongodb://localhost:27017/node_auth', {
+// mongoose.connect('mongodb://localhost:27017/node_auth', {
+mongoose.connect('mongodb+srv://markselin:MarcoS_1683947_@cluster0.uaau3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
+    
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
