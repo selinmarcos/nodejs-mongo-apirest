@@ -26,7 +26,16 @@ app.use(cors({
 }))
 
 app.use(express.json())
-
 app.use('/api', routes)
+
+
+//testing main /
+app.get('/', function(peticion, respuesta){
+    respuesta.send('WECOME TO OUR API [WBM]')
+})
+app.get('/api', function(peticion, respuesta){
+    respuesta.send('INVOICING API [WMB]')
+})
+
 //de esta forma cuando se ejecute localmente 8000 sera el puerto y tambien funcionara en heroku al hacer deploy
 app.listen(process.env.PORT || 8000)
