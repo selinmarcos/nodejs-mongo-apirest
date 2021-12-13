@@ -22,7 +22,9 @@ app.use(cookieParser())
 app.use(cors({
 
     credentials: true,
-    origin: ['http://localhost:8000', 'http://localhost:8080']
+    origin: ['http://localhost:8000', 'http://localhost:8080'] //LOCAL
+    // origin: ['https://invoicing-wmb.herokuapp.com', 'http://localhost:8080'] //CLOUD
+
 }))
 
 app.use(express.json())
@@ -39,3 +41,4 @@ app.get('/api', function(peticion, respuesta){
 
 //de esta forma cuando se ejecute localmente 8000 sera el puerto y tambien funcionara en heroku al hacer deploy
 app.listen(process.env.PORT || 8000)
+
