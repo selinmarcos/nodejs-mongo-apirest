@@ -45,6 +45,7 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     try {
+        console.log('llegamos aqui a login')
         const user = await User.findOne({email: req.body.email})
 
     if (!user) {
@@ -75,6 +76,7 @@ router.post('/login', async (req, res) => {
     //res.json(User)
         
     } catch (error) {
+        
         console.log(error)
     }
     
@@ -86,6 +88,7 @@ router.get('/user', async (req, res) => {
 
   
     try {
+        
         console.log('USER SE EJECUTO')
         const cookie = req.cookies['jwt']
 

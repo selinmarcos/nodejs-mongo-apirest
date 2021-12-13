@@ -21,8 +21,8 @@ app.use(cookieParser())
 app.use(cors({
 
     credentials: true,
-    origin: ['http://localhost:8000', 'http://localhost:8080'] // LOCAL
-    // origin: ['https://invoicing-wmb.herokuapp.com', 'http://localhost:8080'] //CLOUD
+    // origin: ['http://localhost:8000', 'http://localhost:8080'] // LOCAL
+    origin: ['https://invoicing-wmb.herokuapp.com', 'http://localhost:8080'] //CLOUD
 }))
 
 app.use(express.json())
