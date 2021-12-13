@@ -17,6 +17,7 @@ const ventas = require('../models/ventas')
 //LOGIN & REGISTER
 
 router.post('/register', async (req, res) => {
+    try {
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(req.body.pass, salt)
 
@@ -34,10 +35,17 @@ router.post('/register', async (req, res) => {
     const {pass, ...data} = await result.toJSON()
 
     res.send(data)
+        
+    } catch (error) {
+        console.log(error)
+        
+    }
+    
 })
 
 router.post('/login', async (req, res) => {
-    const user = await User.findOne({email: req.body.email})
+    try {
+        const user = await User.findOne({email: req.body.email})
 
     if (!user) {
         return res.status(404).send({
@@ -65,12 +73,20 @@ router.post('/login', async (req, res) => {
 
     })
     //res.json(User)
+        
+    } catch (error) {
+        console.log(error)
+    }
+    
+    
 })
 
 router.get('/user', async (req, res) => {
+    
 
   
     try {
+        console.log('USER SE EJECUTO')
         const cookie = req.cookies['jwt']
 
         const claims = jwt.verify(cookie, 'secret')
@@ -95,54 +111,77 @@ router.get('/user', async (req, res) => {
 })
 
 router.post('/logout', (req, res) => {
-    res.cookie('jwt', '', {maxAge: 0})
+    try {
+        res.cookie('jwt', '', {maxAge: 0})
 
-    res.send({
-        message: 'success'
-    })
+        res.send({
+            message: 'success'
+        })
+        
+    } catch (error) {
+        
+    }
+
 })
 
 
-//PROVIDERS-------------------------------------------------------------------------------
+//-------------------------------PROVIDERS-------------------------------------------------------------------------------
     //Create Provider
     router.post('/providers', async (req, res) => {
+        console.log('ME ESTOY EJECUTANDO')
+        try {
+            const providers = new Providers({
+                provider: req.body.provider,
+                contact: req.body.contact,
+                phone: req.body.phone,
+                direccion: req.body.direccion,
+            })
+        
+            const result = await providers.save()
+        
+            const {...data} = await result.toJSON()
+        
+            res.send(data)
+            
+        } catch (error) {
+            console.log(error)
+        }
 
-        const providers = new Providers({
-            provider: req.body.provider,
-            contact: req.body.contact,
-            phone: req.body.phone,
-            direccion: req.body.direccion,
-        })
-    
-        const result = await providers.save()
-    
-        const {...data} = await result.toJSON()
-    
-        res.send(data)
+       
     })
 
     //Show Provider
     router.get('/providers', async (req, res) => {
-       // console.log('llegue')
-        const filas = await Providers.find({})
-    
-        res.json(filas)
+        try {
+            // console.log('llegue')
+            const filas = await Providers.find({})
+                res.json(filas)
+            
+        } catch (error) {
+            console.log(error)
+            
+        }
+
     })
 
     //DELETE
     router.delete('/providers/:id', async (req, res) => {
-       
+       try {
+        const filas = await Providers.deleteOne({"_id":ObjectID(req.params.id)})             
+        res.json(filas)
+           
+       } catch (error) {
+           console.log(error)
+           
+       }
     
-         const filas = await Providers.deleteOne({"_id":ObjectID(req.params.id)}) 
-             
-         
-     
-         res.json(filas)
+
      })
 
     //EDIT
     router.put('/providers/:id', async (req, res) => {
-        //const {id} = req.params
+        try {
+            //const {id} = req.params
         const providers = {
             provider: req.body.provider,
             contact: req.body.contact,
@@ -157,46 +196,65 @@ router.post('/logout', (req, res) => {
                 res.json({
                     message: 'campo actualizado'
                 })   
+            
+        } catch (error) {
+            console.log(error)
+        }
+        
     })
     
 //------------------------------------USERS-------------------------------------------------
     //GET -------------------------------------------------
     router.get('/users', async (req, res) => {
-        // console.log('llegue')
+        try {
+                    // console.log('llegue')
         const filas = await User.find({})
-    
         res.json(filas)
+            
+        } catch (error) {
+            console.log(error)
+        }
+
     })
     //DELETE-----------------------------------------------------------
     router.delete('/users/:id', async (req, res) => {
+        try {
+            const filas = await User.deleteOne({"_id":ObjectID(req.params.id)}) 
+            res.json(filas)
+            
+        } catch (error) {
+            console.log(error)
+        }
        
     
-        const filas = await User.deleteOne({"_id":ObjectID(req.params.id)}) 
-            
-        
-    
-        res.json(filas)
+
     })
     //CREATE---------------------------------------------------------
 
     router.post('/users', async (req, res) => {
-        const salt = await bcrypt.genSalt(10)
-        const hashedPassword = await bcrypt.hash(req.body.pass, salt)
-    //console.log(req.body.name)
-        const user = new User({
-            name: req.body.name,
-            email: req.body.email,
-            user: req.body.user,
-            phone: req.body.phone,
-            rol: req.body.rol,
-            pass: hashedPassword,
-        })
-    
-        const result = await user.save()
-    
-        const {pass, ...data} = await result.toJSON()
-    
-        res.send(data)
+        try {
+            const salt = await bcrypt.genSalt(10)
+            const hashedPassword = await bcrypt.hash(req.body.pass, salt)
+        //console.log(req.body.name)
+            const user = new User({
+                name: req.body.name,
+                email: req.body.email,
+                user: req.body.user,
+                phone: req.body.phone,
+                rol: req.body.rol,
+                pass: hashedPassword,
+            })
+        
+            const result = await user.save()
+        
+            const {pass, ...data} = await result.toJSON()
+        
+            res.send(data)
+            
+        } catch (error) {
+            console.log(error)
+        }
+
     })
     //
 
@@ -205,68 +263,91 @@ router.post('/logout', (req, res) => {
     //EDIT-------------------------------------------------------------
 
     router.put('/users/:id', async (req, res) => {
-        const salt = await bcrypt.genSalt(10)
-        const hashedPassword = await bcrypt.hash(req.body.pass, salt)
-        //const {id} = req.params
-        const users = {
-            name: req.body.name,
-            email: req.body.email,
-            user: req.body.user,
-            phone: req.body.phone,
-            rol: req.body.rol,
-            pass: hashedPassword,
+        try {
+            const salt = await bcrypt.genSalt(10)
+            const hashedPassword = await bcrypt.hash(req.body.pass, salt)
+            //const {id} = req.params
+            const users = {
+                name: req.body.name,
+                email: req.body.email,
+                user: req.body.user,
+                phone: req.body.phone,
+                rol: req.body.rol,
+                pass: hashedPassword,
+            }
+            //console.log(req.params.id)
+             await User.updateOne({_id:ObjectID(req.params.id)},{$set:users}) 
+          
+                    //res.send(results)
+                    //res.json(filas)
+                    res.json({
+                        message: 'campo actualizado'
+                    })   
+            
+        } catch (error) {
+            console.log(error)
         }
-        //console.log(req.params.id)
-         await User.updateOne({_id:ObjectID(req.params.id)},{$set:users}) 
-      
-                //res.send(results)
-                //res.json(filas)
-                res.json({
-                    message: 'campo actualizado'
-                })   
+
     })    
 
 
 //-------------------------------CLIENTS------------------------------------------------
     //Create Client
     router.post('/clientes', async (req, res) => {
+        try {
+            const clientes = new Clientes({
+                nombre: req.body.nombre,
+                nit: req.body.nit,
+                telefono: req.body.telefono,
+                direccion: req.body.direccion,
+            })
+        
+            const result = await clientes.save()
+        
+            const {...data} = await result.toJSON()
+        
+            res.send(data)
+            
+        } catch (error) {
+            console.log(error)
+        }
 
-        const clientes = new Clientes({
-            nombre: req.body.nombre,
-            nit: req.body.nit,
-            telefono: req.body.telefono,
-            direccion: req.body.direccion,
-        })
-    
-        const result = await clientes.save()
-    
-        const {...data} = await result.toJSON()
-    
-        res.send(data)
+
     })
 
     // //Show Clients
     router.get('/clientes', async (req, res) => {
+        try {
         // console.log('llegue')
          const filas = await Clientes.find({})
      
          res.json(filas)
+            
+        } catch (error) {
+            console.log(error)
+        }
+
      })
  
      //DELETE
      router.delete('/clientes/:id', async (req, res) => {
+         try {
+            const filas = await Clientes.deleteOne({"_id":ObjectID(req.params.id)}) 
+            res.json(filas)
+             
+         } catch (error) {
+             console.log(error)
+             
+         }
         
      
-          const filas = await Clientes.deleteOne({"_id":ObjectID(req.params.id)}) 
-              
-          
-      
-          res.json(filas)
+
       })
 
     //EDIT
     router.put('/clientes/:id', async (req, res) => {
-        //const {id} = req.params
+        try {
+                    //const {id} = req.params
         const clientes = {
             nombre: req.body.nombre,
             nit: req.body.nit,
@@ -281,15 +362,25 @@ router.post('/logout', (req, res) => {
                 res.json({
                     message: 'campo actualizado'
                 })   
+            
+        } catch (error) {
+            console.log(error)   
+        }
+
     })
 
     //------------------------------PRODUCTS------------------------------------------------
     //show providers on select
     router.get('/prov', async (req, res) => {
-        // console.log('llegue')
+        try {
+         // console.log('llegue')
          const filas = await Providers.find({})
      
          res.json(filas)
+        } catch (error) {
+            console.log(error)
+        }
+
      })
     
     
@@ -297,8 +388,8 @@ router.post('/logout', (req, res) => {
     
     //Create Product
     router.post('/products', async (req, res) => {
-
-        //const filas = await Providers.findById(req.body.idProvider)
+        try {
+                    //const filas = await Providers.findById(req.body.idProvider)
         //console.log(filas.provider)
         const products = new Products({
             description: req.body.description,
@@ -312,31 +403,43 @@ router.post('/logout', (req, res) => {
         const {...data} = await result.toJSON()
     
         res.send(data)
+            
+        } catch (error) {
+            console.log(error)
+        }
+
+
     })
 
     // //Show Product
     router.get('/products', async (req, res) => {
+        try {
         // console.log('llegue')
          const filas = await Products.find({}) 
          //const fore = await Providers.findOne({idProvider:"6133c7b6a4781a4110ca81d6"})
          //console.log(fore)
          res.json(filas)
+            
+        } catch (error) {
+            console.log(error)
+        }
+
      })
  
      //DELETE
      router.delete('/products/:id', async (req, res) => {
-        
-     
+         try {          
           const filas = await Products.deleteOne({"_id":ObjectID(req.params.id)}) 
-              
-          
-      
           res.json(filas)
+         } catch (error) {
+           console.log(error)  
+         }
       })
 
     //EDIT
     router.put('/products/:id', async (req, res) => {
-        //const {id} = req.params
+        try {
+                    //const {id} = req.params
         const products = {
             description: req.body.description,
             stock: req.body.stock,
@@ -350,7 +453,12 @@ router.post('/logout', (req, res) => {
                 //res.json(filas)
                 res.json({
                     message: 'campo actualizado'
-                })   
+                })  
+            
+        } catch (error) {
+            console.log(error)
+        }
+ 
     })
 
 //------------------------VENTAS-----------------------------------------
@@ -358,43 +466,53 @@ router.post('/logout', (req, res) => {
 //SEARCH CLIENT BY NIT
 
     router.get('/buscarcliente/:id', async (req, res) => {
+        try {
         // console.log('llegue')
         const filas = await Clientes.findOne({nit:req.params.id})
-      
         res.json(filas)
+        } catch (error) {
+          console.log(error)  
+        }
+
     })
 
 //SHOW VENTAS 
 router.get('/ventas', async (req, res) => {
-    const filas = await Ventas.aggregate(
-        [
-            {
-                $lookup:{
-                    from: "clientes",
-                    localField: "idClient",
-                    foreignField: "_id",
-                    as: "idCliente"
+    try {
+        const filas = await Ventas.aggregate(
+            [
+                {
+                    $lookup:{
+                        from: "clientes",
+                        localField: "idClient",
+                        foreignField: "_id",
+                        as: "idCliente"
+                    },
+        
                 },
+                { $unwind:"$idCliente"}, 
+                {
+                    $lookup:{
+                        from: "users",
+                        localField: "idUser",
+                        foreignField: "_id",
+                        as: "idUsuario"
+                    }
     
-            },
-            { $unwind:"$idCliente"}, 
-            {
-                $lookup:{
-                    from: "users",
-                    localField: "idUser",
-                    foreignField: "_id",
-                    as: "idUsuario"
-                }
-
-            },
-            // // para mostrar en un objeto
-            { $unwind:"$idUsuario"}
- 
-
-        ]
-    ) 
-  
-    res.json(filas)
+                },
+                // // para mostrar en un objeto
+                { $unwind:"$idUsuario"}
+     
+    
+            ]
+        ) 
+      
+        res.json(filas)
+        
+    } catch (error) {
+        console.log(error)
+    }
+    
  })
 
 //PROCESAR VENTA (deben llenarse 2 tablas primero ventas... luego extraemos el id de ventas para insertar en detalleVenta)
@@ -489,7 +607,7 @@ try{
             
             res.send('successfull')
         } catch (error) {
-            console.log('FATAL ERROR EN DVENTAS')
+            console.log('FATAL ERROR EN DVENTAS'+error)
         }
 
         
@@ -498,37 +616,47 @@ try{
 
       //STOCK (REDUCIMOS CADA VENTA)
       router.put('/stock', async (req, res) => {
+          try {
+            console.log('STOCK')
+
+            var s = req.body.cant
+            for(i=0;i< s.length ;i++){
+                var idProduct= s[i].idProduct0
+                const actual = await Products.findOne({_id:idProduct})
+                //res.json(actual)
+                console.log('IMPRIMIENDO STOCK ACTUAL'+ actual.stock)
+                const products = {
+                    
+                    stock: actual.stock - s[i].cantidad,
+                    
+                }     
+                await Products.updateOne({_id:ObjectID(idProduct)},{$set:products}) 
+            }
+    
+            res.send('successfull')
+          
+                    // res.json({
+                    //     message: 'campo actualizado'
+                    // })   
+              
+          } catch (error) {
+              console.log(error)
+          }
         
-        console.log('STOCK')
-
-        var s = req.body.cant
-        for(i=0;i< s.length ;i++){
-            var idProduct= s[i].idProduct0
-            const actual = await Products.findOne({_id:idProduct})
-            //res.json(actual)
-            console.log('IMPRIMIENDO STOCK ACTUAL'+ actual.stock)
-            const products = {
-                
-                stock: actual.stock - s[i].cantidad,
-                
-            }     
-            await Products.updateOne({_id:ObjectID(idProduct)},{$set:products}) 
-        }
-
-        res.send('successfull')
-      
-                // res.json({
-                //     message: 'campo actualizado'
-                // })   
+       
     })  
 
     //STOCK - INPUT FIELD NUMBER
     router.get('/products/:id', async (req, res) => {
-        // console.log('llegue')
-        const filas = await Products.findOne({_id:req.params.id})
-        
-        res.json(filas)
+        try {
+            // console.log('llegue')
+            const filas = await Products.findOne({_id:req.params.id})
+            res.json(filas)
         //console.log(filas)
+        } catch (error) {
+            console.log(error)
+        }
+
     })
 
 
@@ -538,8 +666,8 @@ try{
 
 //CREATE
 router.post('/business', async (req, res) => {
-
-    //const filas = await Providers.findById(req.body.idProvider)
+    try {
+        //const filas = await Providers.findById(req.body.idProvider)
     //console.log(filas.provider)
     const business = new Business({
      
@@ -560,14 +688,26 @@ router.post('/business', async (req, res) => {
     const {...data} = await result.toJSON()
 
     res.send(data)
+        
+    } catch (error) {
+        console.log(error)
+    }
+
+    
 })
 //SHOW COMPANY
 router.get('/business', async (req, res) => {
-    // console.log('llegue')
-     const filas = await Business.find({}) 
-     //const fore = await Providers.findOne({idProvider:"6133c7b6a4781a4110ca81d6"})
-     //console.log(fore)
-     res.json(filas)
+    try {
+            // console.log('llegue')
+        const filas = await Business.find({}) 
+        //const fore = await Providers.findOne({idProvider:"6133c7b6a4781a4110ca81d6"})
+        //console.log(fore)
+        res.json(filas)
+        
+    } catch (error) {
+        console.log(error)
+    }
+    
  })
  //
 
@@ -580,7 +720,8 @@ router.get('/business', async (req, res) => {
 
 //EDIT BUSINESS
 router.put('/business/:id', async (req, res) => {
-
+    try {
+        
     console.log(req.params.id)
     const business = {
         nit: req.body.nit,
@@ -593,67 +734,76 @@ router.put('/business/:id', async (req, res) => {
         country: req.body.country,
         iva: req.body.iva,
     }
-    //console.log(req.params.id)
+
    
      await Business.updateOne({_id:ObjectID(req.params.id)},{$set:business}) 
   
-            //res.send(results)
-            //res.json(filas)
+
             res.json({
                 message: 'campo actualizado'
             })   
+        
+    } catch (error) {
+        console.log(error)
+    }
+
 })
 
 
 //---------------------------------TABLA VENTAS----------------------------------
 router.get('/dventas/:id', async (req, res) => {
-        
-        //  const filas = await detalleVenta.find({idVenta:req.params.id}) 
+        try {
+             //  const filas = await detalleVenta.find({idVenta:req.params.id}) 
         //  res.json(filas)
 
         //guardamos en una variable req.params.id porque si no no funciona directo....
         //el $match es como un where para filtrar solo los detalles de venta con el id especifico.. 
         var idDV = mongoose.Types.ObjectId(req.params.id)
-          const filas = await detalleVenta.aggregate(
-           
-            [ 
-                {
-                    $match:{
-                        idVenta:idDV
-                    }
+        const filas = await detalleVenta.aggregate(
+         
+          [ 
+              {
+                  $match:{
+                      idVenta:idDV
+                  }
 
-                },
-                // Comentamos el lookup a productos porque  si no lo hacemos seguira enlazandose con 'products' y no mostrara el producto eliminado a momento de generar la factura.
-                // {
-                //     $lookup:{
-                //         from: "products",
-                //         localField: "idProduct",
-                //         foreignField: "_id",
-                //         as: "product"
-                //     },
-        
-                // },
-                
-                // { $unwind:"$product"}, 
-                {
-                    $lookup:{
-                        from: "ventas",
-                        localField: "idVenta",
-                        foreignField: "_id",
-                        as: "venta"
-                    }
-    
-                },
-                // // para mostrar en un objeto
-                { $unwind:"$venta"},
+              },
+              // Comentamos el lookup a productos porque  si no lo hacemos seguira enlazandose con 'products' y no mostrara el producto eliminado a momento de generar la factura.
+              // {
+              //     $lookup:{
+              //         from: "products",
+              //         localField: "idProduct",
+              //         foreignField: "_id",
+              //         as: "product"
+              //     },
+      
+              // },
               
-     
-    
-            ]
-        ) 
-        
-        res.json(filas)
+              // { $unwind:"$product"}, 
+              {
+                  $lookup:{
+                      from: "ventas",
+                      localField: "idVenta",
+                      foreignField: "_id",
+                      as: "venta"
+                  }
+  
+              },
+              // // para mostrar en un objeto
+              { $unwind:"$venta"},
+            
+   
+  
+          ]
+      ) 
+      
+      res.json(filas)
 
+            
+        } catch (error) {
+            console.log(error)
+        }
+       
     
     })
 
