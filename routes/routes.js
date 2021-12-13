@@ -89,7 +89,7 @@ router.get('/user', async (req, res) => {
   
     try {
         
-        console.log('USER SE EJECUTO')
+       
         const cookie = req.cookies['jwt']
 
         const claims = jwt.verify(cookie, 'secret')
@@ -104,7 +104,7 @@ router.get('/user', async (req, res) => {
         const user = await User.findOne({_id: claims._id})
 
         const {pass, ...data} = await user.toJSON()
-
+        console.log('AUTENTICADO  '+data)
         res.json(data)
     } catch (e) {
         return res.status(401).send({
