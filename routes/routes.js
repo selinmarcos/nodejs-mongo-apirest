@@ -89,6 +89,7 @@ router.get('/user', async (req, res) => {
         
       
         const cookie = req.cookies['jwt']
+        console.log('ENTRAMOS A USER')
 
         const claims = jwt.verify(cookie, 'secret')
 
@@ -98,7 +99,7 @@ router.get('/user', async (req, res) => {
             // })
             res.send({message:'NO AUTENTICADO'})
         }
-        console.log('ENTRAMOS A USER')
+        
         const user = await User.findOne({_id: claims._id})
         
         const {pass, ...data} = await user.toJSON()
