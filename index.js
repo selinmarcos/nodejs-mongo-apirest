@@ -18,13 +18,13 @@ const routes = require('./routes/routes')
 app = express()
 
 app.use(cookieParser())
-// app.use(cors({
+app.use(cors({
 
-//     credentials: true,
-//     // origin: ['http://localhost:8000', 'http://localhost:8080'] // LOCAL
-//     origin: ['https://invoicing-wmb.herokuapp.com', 'http://localhost:8080'] //CLOUD
-// }))
-app.use(cors())
+    credentials: true,
+    // origin: ['http://localhost:8000', 'http://localhost:8080'] // LOCAL
+    origin: ['https://invoicing-wmb.herokuapp.com', 'http://localhost:8080'] //CLOUD
+}))
+
 
 app.use(express.json())
 
