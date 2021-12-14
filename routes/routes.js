@@ -98,9 +98,9 @@ router.get('/user', async (req, res) => {
             // })
             res.send({message:'NO AUTENTICADO'})
         }
-
-        const user = await User.findOne({_id: claims._id})
         console.log('ENTRAMOS A USER')
+        const user = await User.findOne({_id: claims._id})
+        
         const {pass, ...data} = await user.toJSON()
         console.log('AUTENTICADO'+data)
         res.json(data)
