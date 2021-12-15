@@ -63,7 +63,7 @@ router.post('/login', async (req, res) => {
     const token = jwt.sign({_id: user._id}, "secret")
     
     res.cookie('jwt', token, {
-        sameSite: 'lax',
+        sameSite: 'none',
         httpOnly: true,
         secure: true, //added it
         maxAge: 24 * 60 * 60 * 1000 // 1 day
