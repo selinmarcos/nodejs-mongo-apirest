@@ -61,13 +61,13 @@ router.post('/login', async (req, res) => {
     }
     
     const token = jwt.sign({_id: user._id}, "secret")
-    console.log('LLEGAMOS AQUI TOKEN' + token)
+    
     res.cookie('jwt', token, {
         httpOnly: true,
-        //secure: false, //added it
+        secure: true, //added it
         maxAge: 24 * 60 * 60 * 1000 // 1 day
     })
-
+    console.log('IMPRIMIENDO TOKEN'+res.json({token:token}))
     res.json({
         token: token,
         message: 'success',
