@@ -23,7 +23,7 @@ app.use(cors({
     credentials: true,
     // origin: ['http://localhost:8000', 'http://localhost:8080'] // LOCAL
     // origin: ['https://invoicing-wmb.herokuapp.com', 'http://localhost:8080'] //CLOUD-LOCAL
-    origin: ['https://invoicing-wmb.herokuapp.com', 'https://invoicing-client.netlify.app'] //CLOUD
+    origin: ['https://invoicing-wmb.herokuapp.com', 'https://invoicing-client.netlify.app', 'http://localhost:8081'] //CLOUD
 }))
 
 
