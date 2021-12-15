@@ -115,7 +115,10 @@ router.get('/user', async (req, res) => {
 
 router.post('/logout', (req, res) => {
     try {
+        
         res.cookie('jwt', '', {maxAge: 0})
+        //añadimos clearcookie para probar
+        res.clearCookie("jwt")
 
         res.send({
             message: 'success'
