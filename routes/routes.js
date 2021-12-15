@@ -65,7 +65,7 @@ router.post('/login', async (req, res) => {
     res.cookie('jwt', token, {
         sameSite: 'none',
         httpOnly: true,
-        //secure: true, //added it
+        secure: true, //added it
         maxAge: 24 * 60 * 60 * 1000 // 1 day
     })
     console.log('IMPRIMIENDO TOKEN'+res.json({token:token}))
