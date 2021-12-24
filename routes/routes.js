@@ -63,7 +63,7 @@ router.post('/login', async (req, res) => {
     const token = jwt.sign({_id: user._id}, "secret")
     
     res.cookie('jwt', token, {
-        sameSite: 'none', //improve cookie security
+        sameSite: 'none', //improve cookie security, with none-->login but we don't have jwt cookie, with lax  not login
         httpOnly: true, //no access through js
         secure: true, //https only
         maxAge: 24 * 60 * 60 * 1000 // 1 day
@@ -686,6 +686,7 @@ router.post('/business', async (req, res) => {
         city: req.body.city,
         country: req.body.country,
         iva: req.body.iva,
+        web: req.body.web
         
     })
 
@@ -704,11 +705,12 @@ router.post('/business', async (req, res) => {
 //SHOW COMPANY
 router.get('/business', async (req, res) => {
     try {
-            // console.log('llegue')
+            console.log('llegue business')
         const filas = await Business.find({}) 
         //const fore = await Providers.findOne({idProvider:"6133c7b6a4781a4110ca81d6"})
         //console.log(fore)
         res.json(filas)
+        
         
     } catch (error) {
         console.log(error)
@@ -739,6 +741,7 @@ router.put('/business/:id', async (req, res) => {
         city: req.body.city,
         country: req.body.country,
         iva: req.body.iva,
+        web: req.body.web
     }
 
    
