@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
 
     },
     fecha: {
-        type: Date,
+        type: String,
         required: true
     },
     idClient: {
